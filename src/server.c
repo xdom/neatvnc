@@ -788,6 +788,27 @@ static int on_client_qemu_key_event(struct nvnc_client* client)
 	return sizeof(*msg);
 }
 
+static int on_client_set_desktop_size(struct nvnc_client* client)
+{
+	struct nvnc* server = client->server;
+
+	struct rfb_client_set_desktop_size_msg* msg =
+	        (struct rfb_client_set_desktop_size_msg*)(client->msg_buffer +
+                                              client->buffer_index);
+
+	size_t n_screens = MIN(MAX_SCREENS, ntohs(msg->n_screens);
+
+	if (client->buffer_len - client->buffer_index <
+			sizeof(*msg) + n_screens * sizeof(struct rfb_client_set_desktop_size_screen))
+		return 0;
+
+	nvnc_desktop_size_fn fn = server->desktop_size_fn;
+	if (fn)
+		fn(client, msg->width, msg->height);
+
+	return sizeof(*msg);
+}
+
 static int on_client_qemu_event(struct nvnc_client* client)
 {
 	if (client->buffer_len - client->buffer_index < 2)
@@ -953,6 +974,8 @@ static int on_client_message(struct nvnc_client* client)
 		return on_client_pointer_event(client);
 	case RFB_CLIENT_TO_SERVER_CLIENT_CUT_TEXT:
 		return on_client_cut_text(client);
+	case RFB_CLIENT_TO_SERVER_SET_DESKTOP_SIZE:
+		return on_client_set_desktop_size(client);
 	case RFB_CLIENT_TO_SERVER_QEMU:
 		return on_client_qemu_event(client);
 	}
@@ -1543,6 +1566,12 @@ EXPORT
 void nvnc_set_cut_text_fn(struct nvnc* self, nvnc_cut_text_fn fn)
 {
 	self->cut_text_fn = fn;
+}
+
+EXPORT
+void nvnc_set_desktop_size_fn(struct nvnc* self, nvnc_desktop_size_fn fn)
+{
+	self->desktop_size_fn = fn;
 }
 
 EXPORT

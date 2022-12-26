@@ -34,6 +34,7 @@
 #define MAX_OUTGOING_FRAMES 4
 #define MSG_BUFFER_SIZE 4096
 #define MAX_CUT_TEXT_SIZE 10000000
+#define MAX_SCREENS 32
 
 enum nvnc_client_state {
 	VNC_CLIENT_STATE_ERROR = -1,
@@ -110,6 +111,7 @@ struct nvnc {
 	nvnc_fb_req_fn fb_req_fn;
 	nvnc_client_fn new_client_fn;
 	nvnc_cut_text_fn cut_text_fn;
+	nvnc_desktop_size_fn desktop_size_fn;
 	struct nvnc_display* display;
 	struct {
 		struct nvnc_fb* buffer;

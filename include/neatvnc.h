@@ -112,6 +112,7 @@ typedef bool (*nvnc_auth_fn)(const char* username, const char* password,
                              void* userdata);
 typedef void (*nvnc_cut_text_fn)(struct nvnc_client*, const char* text,
 		uint32_t len);
+typedef void (*nvnc_desktop_size_fn)(struct nvnc_client*, uint16_t width, uint16_t height);
 typedef void (*nvnc_fb_release_fn)(struct nvnc_fb*, void* context);
 typedef struct nvnc_fb* (*nvnc_fb_alloc_fn)(uint16_t width, uint16_t height,
 		uint32_t format, uint16_t stride);
@@ -148,6 +149,7 @@ void nvnc_set_fb_req_fn(struct nvnc* self, nvnc_fb_req_fn);
 void nvnc_set_new_client_fn(struct nvnc* self, nvnc_client_fn);
 void nvnc_set_client_cleanup_fn(struct nvnc_client* self, nvnc_client_fn fn);
 void nvnc_set_cut_text_fn(struct nvnc*, nvnc_cut_text_fn fn);
+void nvnc_set_desktop_size_fn(struct nvnc*, nvnc_desktop_size_fn fn);
 
 bool nvnc_has_auth(void);
 int nvnc_enable_auth(struct nvnc* self, const char* privkey_path,

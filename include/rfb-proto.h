@@ -45,6 +45,7 @@ enum rfb_client_to_server_msg_type {
 	RFB_CLIENT_TO_SERVER_KEY_EVENT = 4,
 	RFB_CLIENT_TO_SERVER_POINTER_EVENT = 5,
 	RFB_CLIENT_TO_SERVER_CLIENT_CUT_TEXT = 6,
+	RFB_CLIENT_TO_SERVER_SET_DESKTOP_SIZE = 251,
 	RFB_CLIENT_TO_SERVER_QEMU = 255,
 };
 
@@ -155,6 +156,23 @@ struct rfb_client_pointer_event_msg {
 	uint8_t button_mask;
 	uint16_t x;
 	uint16_t y;
+} RFB_PACKED;
+
+struct rfb_client_set_desktop_size_screen {
+  uint32_t id;
+  uint16_t x;
+  uint16_t y;
+  uint16_t width;
+  uint16_t height;
+  uint32_t flags;
+};
+
+struct rfb_client_set_desktop_size_msg {
+  uint8_t type;
+  uint16_t width;
+  uint16_t height;
+  uint8_t n_screens;
+  struct rfb_client_set_desktop_size_screen screens[0];
 } RFB_PACKED;
 
 struct rfb_cut_text_msg {
